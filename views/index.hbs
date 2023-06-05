@@ -1,0 +1,13 @@
+<h1>{{appTitle}} 🚀</h1>
+<h2>Filter books by min-rating</h2>
+
+<section>
+    <form method="get" action="/books?minRating=">
+        <label>Values between 0 and 10
+            <input name="minRating" type="number" min="0" max="10">
+        </label>
+        <button type="submit">Submit</button>
+    </form>
+</section>
+
+<a href="/books/create">Create a Book</a>
