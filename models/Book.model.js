@@ -4,7 +4,7 @@ const bookSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    author: { type: String },
+    author: { type: Schema.Types.ObjectId, ref: "Author" }, //<--- or we can import mongoose const { mongoose, Schema, model } = require("mongoose") and use mongoose.Schema.ObjectId
     rating: { type: Number },
   },
   {
