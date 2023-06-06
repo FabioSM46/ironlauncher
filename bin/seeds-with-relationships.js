@@ -67,7 +67,7 @@ async function seedData() {
       const authorId = authorDetails._id;
 
       const newBook = {
-        title: bookObj.title,
+        title: bookObj.title,       
         description: bookObj.description,
         rating: bookObj.rating,
         author: authorId,

@@ -3,13 +3,22 @@
 {{#each books}}
 <section class="book-summary">
     <h2>{{this.title}}</h2>
-    <p>Author: {{this.author}} </p>
-    <p>Rating: {{this.rating}}</p>
+    <ul>
+        <li>Author: {{this.author.name}}
+            <ul>
+                <li>Age: {{this.author.age}}</li>
+                <li>Country: {{this.author.country}}</li>
+            </ul>
+        <li>Rating: {{this.rating}}</li>
+        </li>
+    </ul>
+
     <p><a href="/book-details/{{this._id}}">More details</a></p>
     <p><a href="/book-details/{{this._id}}/update">Update</a></p>
-    {{!-- add the form to handle the POST request to remove a specific book --}}
     <form action="/book-details/{{_id}}/delete" method="POST">
         <button>Delete</button>
     </form>
 </section>
 {{/each}}
+
+<a href="/">Back to start</a>

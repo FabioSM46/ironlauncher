@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Book = require("../models/Book.model");
+const Author = require("../models/Author.model");
+
 /* GET /books */
 router.get("/books", (req, res, next) => {
   let minimumRating = req.query.minRating;
@@ -12,23 +14,31 @@ router.get("/books", (req, res, next) => {
   }
 
   Book.find(filter)
+    .populate("author")
     .then((booksFromDB) => {
       res.render("books/books-list", { books: booksFromDB });
     })
     .catch((err) => {
-      console.log("Error getting the list of books from DB...", err);
       next(err);
     });
 });
 
 router.get("/book-details/:bookID", (req, res, next) => {
-  Book.findById(req.params.bookID).then((booksByID) => {
-    res.render("books/book-details", { bookID: booksByID });
-  });
+  Book.findById(req.params.bookID)
+    .populate("author")
+    .then((booksByID) => {
+      res.render("books/book-details", { bookID: booksByID });
+    });
 });
 
 router.get("/books/create", (req, res, next) => {
-  res.render("books/create-book");
+  Author.find()
+    .then((authorsFromDB) => {
+      res.render("books/book-create", { authorsArr: authorsFromDB });
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 router.post("/books/create", (req, res, next) => {
@@ -41,10 +51,6 @@ router.post("/books/create", (req, res, next) => {
 
   Book.create(newBook)
     .then((newBook) => {
-      /*res.send
-        res.sendfile
-        res.render
-        res.json */
       res.redirect("/books");
     })
     .catch((err) => {
@@ -52,19 +58,37 @@ router.post("/books/create", (req, res, next) => {
     });
 });
 
-router.get("/book-details/:bookId/update", (req, res, next) => {
-  Book.findById(req.params.bookId)
-    .then((bookById) => {
-      res.render("books/book-update", { bookID: bookById });
+/* router.get("/book-details/:bookId/update", (req, res, next) => {
+  const { bookId } = req.params;
+  let authors;
+  Author.find()
+    .then((authorsFromDB) => {
+      authors = authorsFromDB;
+      return Book.findById(bookId);
+    })
+    .then((bookToUpdate) => {
+      res.render("books/book-update", { book: bookToUpdate, authors: authors });
     })
     .catch((err) => {
       next(err);
     });
-});
+}); */
+///
+router.get("/book-details/:bookId/update", async (req, res, next) => {
+  const { bookId } = req.params;
 
+  try {
+    const authors = await Author.find();
+    const bookDetails = await Book.findById(bookId);
+
+    res.render("books/book-update", { book: bookDetails, authors: authors });
+  } catch (err) {
+    next(err);
+  }
+});
+///
 router.post("/book-details/:bookId/update", (req, res, next) => {
   const { bookId } = req.params;
-  console.log(req.params.bookId);
   const { title, description, author, rating } = req.body;
 
   Book.findByIdAndUpdate(
@@ -72,8 +96,10 @@ router.post("/book-details/:bookId/update", (req, res, next) => {
     { title, description, author, rating },
     { new: true }
   )
+    .populate("author")
     .then((updatedBook) => {
-      res.redirect(`/book-details/${updatedBook.id}/update`);
+      //res.redirect(`/book-details/${updatedBook.id}/update`);
+      res.redirect("/books");
     })
     .catch((err) => next(err));
 });

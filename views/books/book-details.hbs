@@ -3,10 +3,13 @@
 <section class="book-details">
     <h2>{{bookID.title}}</h2>
 
-    <p>Author: {{bookID.author}}</p>
+    <p>Author: {{bookID.author.name}}</p>
+    <ul>
+        <li>Age: {{bookID.author.age}}</li>
+        <li>Country: {{bookID.author.country}}</li>
+    </ul>
     <p> Description: {{bookID.description}}</p>
     <p>Rating: {{bookID.rating}}</p>
-
 </section>
 
 <button onclick="history.back()">Go Back</button>
