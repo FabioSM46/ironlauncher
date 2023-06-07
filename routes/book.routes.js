@@ -58,22 +58,6 @@ router.post("/books/create", (req, res, next) => {
     });
 });
 
-/* router.get("/book-details/:bookId/update", (req, res, next) => {
-  const { bookId } = req.params;
-  let authors;
-  Author.find()
-    .then((authorsFromDB) => {
-      authors = authorsFromDB;
-      return Book.findById(bookId);
-    })
-    .then((bookToUpdate) => {
-      res.render("books/book-update", { book: bookToUpdate, authors: authors });
-    })
-    .catch((err) => {
-      next(err);
-    });
-}); */
-///
 router.get("/book-details/:bookId/update", async (req, res, next) => {
   const { bookId } = req.params;
 

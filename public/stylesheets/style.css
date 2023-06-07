@@ -1,9 +1,31 @@
 body {
-  padding: 50px;
+  padding: 0;
+  margin: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: tomato
 }
 
 h1 {
   color: 15px;
 }
 
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #00b7ff;
+}
+
+nav a {
+  padding: 1rem 1rem;
+  background-color: #00b7ff;
+  border-right: 1px solid #999;
+  text-decoration: none;
+}
+
+nav a:last-child {
+  border-right: none;
+}
