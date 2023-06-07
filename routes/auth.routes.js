@@ -95,7 +95,7 @@ router.post("/login", (req, res, next) => {
         return;
       } else if (bcryptjs.compareSync(password, user.passwordHash)) {
         //login successful
-        req.session.favFood = "pizza"
+        req.session.favFood = "pizza";
         res.render("auth/user-profile", { userDetails: user });
       } else {
         //login failed
@@ -110,11 +110,17 @@ router.post("/login", (req, res, next) => {
     });
 });
 
+//POST logout
+router.post("/logout", (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) next(err);
+    res.redirect("/"); // if logout sucessful, redirect to homepage
+  });
+});
+
 //GET user-profile
 router.get("/user-profile", (req, res) => {
-  const food = req.session.favFood
-  console.log(food);
-  res.render("auth/user-profile");
+  res.render("auth/user-profile", { userDetails: req.session.currentUser });
 });
 
 module.exports = router;
