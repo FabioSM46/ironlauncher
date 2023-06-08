@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Book = require("../models/Book.model");
 const Author = require("../models/Author.model");
+const isLoggedIn = require("../middleware/isLoggedIn");
 
 /* GET /books */
 router.get("/books", (req, res, next) => {
@@ -31,7 +32,7 @@ router.get("/book-details/:bookID", (req, res, next) => {
     });
 });
 
-router.get("/books/create", (req, res, next) => {
+router.get("/books/create", isLoggedIn, (req, res, next) => {
   Author.find()
     .then((authorsFromDB) => {
       res.render("books/book-create", { authorsArr: authorsFromDB });
@@ -41,7 +42,7 @@ router.get("/books/create", (req, res, next) => {
     });
 });
 
-router.post("/books/create", (req, res, next) => {
+router.post("/books/create", isLoggedIn, (req, res, next) => {
   const newBook = {
     title: req.body.title,
     description: req.body.description,
@@ -58,20 +59,24 @@ router.post("/books/create", (req, res, next) => {
     });
 });
 
-router.get("/book-details/:bookId/update", async (req, res, next) => {
-  const { bookId } = req.params;
+router.get(
+  "/book-details/:bookId/update",
+  isLoggedIn,
+  async (req, res, next) => {
+    const { bookId } = req.params;
 
-  try {
-    const authors = await Author.find();
-    const bookDetails = await Book.findById(bookId);
+    try {
+      const authors = await Author.find();
+      const bookDetails = await Book.findById(bookId);
 
-    res.render("books/book-update", { book: bookDetails, authors: authors });
-  } catch (err) {
-    next(err);
+      res.render("books/book-update", { book: bookDetails, authors: authors });
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 ///
-router.post("/book-details/:bookId/update", (req, res, next) => {
+router.post("/book-details/:bookId/update", isLoggedIn, (req, res, next) => {
   const { bookId } = req.params;
   const { title, description, author, rating } = req.body;
 
@@ -88,7 +93,7 @@ router.post("/book-details/:bookId/update", (req, res, next) => {
     .catch((err) => next(err));
 });
 
-router.post("/book-details/:bookId/delete", (req, res, next) => {
+router.post("/book-details/:bookId/delete", isLoggedIn, (req, res, next) => {
   const { bookId } = req.params;
   Book.findByIdAndDelete(bookId)
     .then(() => {
